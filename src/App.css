@@ -3,9 +3,42 @@
 }
 
 h1 {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 6px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-h2 {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+button.custom-button {
+  margin-bottom: 8px;
+  margin-right: 8px;
+  background: linear-gradient(to bottom, #7db9e8 0%, #0071bc 100%);
+  border: 1px solid #00509e;
+  box-shadow: inset 0 1px 0 0 #b5d4f2, 0 1px 0 0 #ffffff, 0 2px 5px rgba(0, 0, 0, 0.3);
+  color: yellow;
+  text-shadow: 0 1px 0 #00509e;
+  transform: perspective(32px) rotateX(5deg);
 }
+
+.custom-button {
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.custom-button:last-child {
+  margin-bottom: 24px;
+  margin-left: 2px;
+}
+
+.custom-button#deleteButton {
+  margin-top: 16px;
+  color: red;
+}
+#dodajButton {
+  margin-bottom: 8px;
+  margin-right: 8px;
+  background: linear-gradient(to bottom, #7db9e8 0%, #0071bc 100%);
+  border: 1px solid #00509e;
+  box-shadow: inset 0 1px 0 0 #b5d4f2, 0 1px 0 0 #ffffff, 0 2px 5px rgba(0, 0, 0, 0.3);
+  color: yellow;
+  text-shadow: 0 1px 0 #00509e;
+  transform: perspective(32px) rotateX(5deg);
+}
+

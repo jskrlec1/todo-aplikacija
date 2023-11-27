@@ -1,19 +1,19 @@
-import "./App.css";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col, Form } from "react-bootstrap";
 import Todo from "./Components/todo";
-import Todo1 from "./Components/todo1";
+import "./App.css"; 
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(
+    JSON.parse(localStorage.getItem("tasks")) || []
+  );
   const [newTask, setNewTask] = useState("");
+  const [currentFilter, setCurrentFilter] = useState("All");
 
-  const addTask = () => {
-    if (newTask.trim() !== "") {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
-      setNewTask("");
-    }
-  };
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const deleteTask = (taskId) => {
     setTasks(tasks.filter((task) => task.id !== taskId));
@@ -31,61 +31,100 @@ function App() {
     setTasks(tasks.filter((task) => !task.completed));
   };
 
+  const getFilteredTasks = () => {
+    switch (currentFilter) {
+      case "Active":
+        return tasks.filter((task) => !task.completed);
+      case "Completed":
+        return tasks.filter((task) => task.completed);
+      default:
+        return tasks;
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (newTask.trim() !== "") {
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setNewTask("");
+    }
+  };
+
   return (
-    <Container className="mt-5 border border-danger p-4" style={{ backgroundColor: 'chartreuse' }}>
+    <Container
+      className="mt-5 border border-danger p-4"
+      style={{ backgroundColor: "chartreuse" }}
+    >
       <Row>
         <Col className="text-center">
           <h1>Moji zadaci</h1>
-          <Form>
-          <Form.Group controlId="taskInput">
-  <Form.Control
-    type="text"
-    placeholder="Novi zadatak"
-    value={newTask}
-    onChange={(e) => setNewTask(e.target.value)}
-  />
-</Form.Group>
-
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="taskInput">
+              <Form.Control
+                type="text"
+                placeholder="Novi zadatak"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                style={{ textAlign: "center" }}
+              />
+            </Form.Group>
             <br />
-            <Button variant="primary" onClick={addTask}>
+            <Button id="dodajButton" variant="primary" type="submit">
               Dodaj
             </Button>
           </Form>
         </Col>
       </Row>
       <Row className="mt-3">
-      <Col style={{ marginBottom: '8px', marginRight: '8px' }}>
-          <Todo
-            title="Svi zadaci"
-            tasks={tasks}
-            onDelete={deleteTask}
-            onToggleComplete={toggleComplete}
-          />
-        </Col>
-        <Col style={{ marginBottom: '8px', marginRight: '8px' }}>
-          <Todo1
-            title="Aktivni zadaci"
-            tasks={tasks.filter((task) => !task.completed)}
-            onDelete={deleteTask}
-            onToggleComplete={toggleComplete}
-          />
-        </Col>
-        <Col style={{ marginBottom: '8px', marginRight: '8px' }}>
-          <Todo1
-            title="Završeni zadaci"
-            tasks={tasks.filter((task) => task.completed)}
-            onDelete={deleteTask}
-            onToggleComplete={toggleComplete}
-          />
+        <Col className="text-center">
           <Button
+            className="custom-button"
+            variant="primary"
+            onClick={() => setCurrentFilter("All")}
+            style={{
+              marginBottom: "8px",
+              marginRight: "8px",
+            }}
+          >
+            Svi zadaci
+          </Button>
+          <Button
+            className="custom-button"
+            variant="primary"
+            onClick={() => setCurrentFilter("Active")}
+            style={{
+              marginBottom: "8px",
+              marginRight: "8px",
+            }}
+          >
+            Aktivni zadaci
+          </Button>
+          <Button
+            className="custom-button"
+            variant="primary"
+            onClick={() => setCurrentFilter("Completed")}
+          >
+            Završeni zadaci
+          </Button>
+          <Button
+            className="custom-button"
             variant="danger"
-            className="mt-3"
+            id="deleteButton"
             onClick={deleteCompletedTasks}
           >
             Izbriši završene zadatke
           </Button>
         </Col>
       </Row>
+      {getFilteredTasks().map((task) => (
+        <Todo
+          key={task.id}
+          task={task}
+          onDelete={deleteTask}
+          onToggleComplete={toggleComplete}
+        />
+      ))}
     </Container>
   );
 }
